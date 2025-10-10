@@ -6,6 +6,7 @@ import {Button} from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
         
 import { Panel } from 'primereact/panel';
+  
 function PokemonForm({onCreatePokemon = ()=>{}}) {
 
     const handleClick = ()=>{
@@ -22,9 +23,10 @@ function PokemonForm({onCreatePokemon = ()=>{}}) {
     }
 
     const tipos = [
-        { nombre:"fuego", imagen: ""},
-        { nombre: "agua", imagen: ""},
-        { nombre: "electrico", imagen: ""}
+        { nombre:"fuego", imagen: "fire"},
+        { nombre: "agua", imagen: "drop"},
+        { nombre: "electrico", imagen: "thunder"},
+        { nombre: "planta", imagen: "plant"}
     ];
 
 

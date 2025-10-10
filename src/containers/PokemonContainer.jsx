@@ -1,18 +1,31 @@
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import PokemonForm from '../components/PokemonForm'
 import PokemonView from '../components/PokemonView'
-import { createPokemon } from '../services/PokemonService'
+import { createPokemon, deleteAll, getPokemon } from '../services/PokemonService'
 import {Toast} from 'primereact/toast';
 function PokemonContainer() {
     const toast = useRef(null);
 
-    const pokemonData = [{ nombre: "pikachu", tipo: "electrico", numero: 1 }, { nombre: "pikachu", tipo: "electrico", numero: 2 }, { nombre: "pikachu", tipo: "electrico", numero: 1 }, { nombre: "pikachu", tipo: "electrico", numero: 1 },
-    { nombre: "pikachu", tipo: "electrico", numero: 1 }, { nombre: "pikachu", tipo: "electrico", numero: 7 }, { nombre: "pikachu", tipo: "electrico", numero: 1 }]
+    const [pokemonData, setPokemonData] = useState([]);
 
     const handleCreate = (pokemon) => {
         createPokemon(pokemon);
         toast.current.show({severity: "success", summary: "Pokemon registrado", detail: "Nuevo pokemon disponible"});
+        const data = getPokemon();
+        setPokemonData(data); 
     }
+
+    const handleEnviar = ()=>{
+        deleteAll();
+        setPokemonData([]);
+        toast.current.show({severity:"danger", summary: "F a los pokemon"});
+    }
+
+    useEffect(()=>{
+        //Si el arreglo de dependencias esta vacio, este callback se ejecuta solo una vez.
+        const data = getPokemon();
+        setPokemonData(data); 
+    }, []);
 
     return (
         <>
@@ -22,7 +35,7 @@ function PokemonContainer() {
                     <PokemonForm onCreatePokemon={handleCreate} ></PokemonForm>
                 </div>
                 <div className="col">
-                    <PokemonView pokemonData={pokemonData} />
+                    <PokemonView onEnviarPC={handleEnviar} pokemonData={pokemonData} />
                 </div>
             </div>
         </>

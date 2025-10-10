@@ -26,4 +26,9 @@ const getPokemon = ()=>{
     return [];
 }
 
-export {createPokemon, getPokemon};
+const deleteAll = ()=>{
+    localStorage.removeItem(localKey);
+
+}
+
+export {createPokemon, getPokemon, deleteAll};
