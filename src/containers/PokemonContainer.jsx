@@ -1,16 +1,27 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import PokemonForm from '../components/PokemonForm'
 import PokemonView from '../components/PokemonView'
 import { createPokemon, deleteAll, getPokemon } from '../services/PokemonService'
-import {Toast} from 'primereact/toast';
-function PokemonContainer() {
-    const toast = useRef(null);
+import { Snackbar, Alert } from '@mui/material'
 
+function PokemonContainer() {
     const [pokemonData, setPokemonData] = useState([]);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+    const handleCloseSnackbar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbar({ ...snackbar, open: false });
+    };
 
     const handleCreate = (pokemon) => {
         createPokemon(pokemon);
-        toast.current.show({severity: "success", summary: "Pokemon registrado", detail: "Nuevo pokemon disponible"});
+        setSnackbar({
+            open: true,
+            message: `Pokemon registrado: ${pokemon.nombre || 'Nuevo pokemon disponible'}`,
+            severity: 'success'
+        });
         const data = getPokemon();
         setPokemonData(data); 
     }
@@ -18,7 +29,11 @@ function PokemonContainer() {
     const handleEnviar = ()=>{
         deleteAll();
         setPokemonData([]);
-        toast.current.show({severity:"danger", summary: "F a los pokemon"});
+        setSnackbar({
+            open: true,
+            message: 'F a los pokemon',
+            severity: 'error'
+        });
     }
 
     useEffect(()=>{
@@ -29,12 +44,16 @@ function PokemonContainer() {
 
     return (
         <>
-            <Toast ref={toast} />
-            <div className='row'>
-                <div className="col">
+            <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={handleCloseSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'right' }}>
+                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} variant="filled" sx={{ width: '100%' }}>
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
+            <div className='row container-fluid px-4'>
+                <div className="col-12 col-md-6">
                     <PokemonForm onCreatePokemon={handleCreate} ></PokemonForm>
                 </div>
-                <div className="col">
+                <div className="col-12 col-md-6">
                     <PokemonView onEnviarPC={handleEnviar} pokemonData={pokemonData} />
                 </div>
             </div>
